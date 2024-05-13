@@ -3,12 +3,14 @@ const { Midi } = require('@tonejs/midi');
 const { StackAutomatonNominationChord } = require('./automato');
 
 const outputMidiFilePath = './teste.mid';
-
+const BPM = 120;
+let currentTime = 0.5; // Tempo inicial
 const sequenceNotes =  [
-    ["G", "Bb", "Db", "E"],
+    ["E", "G", "B"],
+    ["B", "D", "F", "A"],
     ["C", "E", "G"],
-    //["C#", "A", "E"],
-    ["C", "D#", "G"]
+    ["G", "B", "D"],
+    ["D", "F#", "A"],
 ];
 
 // Função para converter um nome de nota para seu número MIDI
@@ -28,7 +30,7 @@ function noteToMidi(note) {
 // Função para calcular a duração total de uma sequência de acordes
 function calculateTotalDuration(chordType) {
     const durationMap = {
-        "M": 1, "m": 1, "sus4": 1, "7M": 1.5,
+        "M": 2, "m": 2, "sus4": 1, "7M": 1.5,
         "7": 1.5, "9": 2, "m7": 1.5, "m7(9)": 2,
         "º": 2, "m7b5": 1.5, "aug": 1, "/3": 0.5,
         "/5": 1, "7alt": 1.5
@@ -36,24 +38,30 @@ function calculateTotalDuration(chordType) {
     let totalDuration = 0;
     const duration = durationMap[chordType];
     if (duration) {
-        totalDuration += duration;
+        totalDuration = (BPM / 60) * duration;
     }
     
     return totalDuration;
 }
 
 // Função para converter a sequência de acordes em uma sequência de notas MIDI
-function sequenceToMidiNotes(tonica, duration) {
+function sequenceToMidiNotes(tonica, duration, sequence) {
     const midiNotes = [];
-    let currentTime = 0.5;
-    const rootNote = noteToMidi(tonica);
-    midiNotes.push({
-        midi: rootNote,
-        time: currentTime,
-        duration: duration  // Usa a duração calculada
-    });
+    sequence.forEach( note => {
+        const rootNote = noteToMidi(note);
+        midiNotes.push({
+            midi: rootNote,
+            time: currentTime,
+            duration: duration,
+            velocity: 1, // ajuste conforme necessário
+            noteOffVelocity: 0 // pode ser 0 para notas sustentadas
+        });
+    })
+    // Adiciona a duração acumulada para o próximo tempo
+    currentTime += duration;
     return midiNotes;
 }
+
 
 // Criação do arquivo MIDI com base na sequência de acordes
 const midi = new Midi();
@@ -61,9 +69,9 @@ const track = midi.addTrack();
 let sequenceMidiNotes = []
 sequenceNotes.forEach(sequence => {
     const stackAutomatonNominationChord = new StackAutomatonNominationChord();
-    const [tonica, result, type_chord] = stackAutomatonNominationChord.nomination(sequence);
+    const [tonica, chord, type_chord] = stackAutomatonNominationChord.nomination(sequence);
     const totalDuration = calculateTotalDuration(type_chord); // Calcula a duração total
-    const midiNotes = sequenceToMidiNotes(tonica, totalDuration); // Usa a duração total
+    const midiNotes = sequenceToMidiNotes(tonica,totalDuration, sequence); // Usa a duração total
     midiNotes.forEach(note => {
         track.addNote({
             midi: note.midi,
@@ -75,4 +83,4 @@ sequenceNotes.forEach(sequence => {
 });
 
 // Escreve o arquivo MIDI
-//fs.writeFileSync(outputMidiFilePath, Buffer.from(midi.toArray()));
+fs.writeFileSync(outputMidiFilePath, Buffer.from(midi.toArray()));
