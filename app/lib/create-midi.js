@@ -98,12 +98,39 @@ export const createAndSaveMidi = async (sequenceNotes) => {
   return null;
 }
 
-// Função para reproduzir o arquivo MIDI
-// export const playMidi = async (uri) => {
-//   try {
-//     const { sound } = await Audio.Sound.createAsync({ uri });
-//     await sound.playAsync();
-//   } catch (error) {
-//     console.error("Erro ao tentar reproduzir o MIDI:", error);
-//   }
-// }
+export async function convertMidiToMp3(midiFileUri) {
+  try {
+    const response = await fetch('https://api.convertio.co/convert', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer YOUR_API_KEY', // Substitua YOUR_API_KEY pelo seu token de API
+      },
+      body: JSON.stringify({
+        'apikey': 'e85265ea22d207c91cb5ea7d76d4ffa8', // Substitua YOUR_API_KEY pelo seu token de API
+        'input': 'upload',
+        'file': midiFileUri,
+        'outputformat': 'mp3',
+      }),
+    });
+
+    const data = await response.json();
+    if (!data.data || !data.data.id) {
+      throw new Error('Failed to convert MIDI to MP3. Response: ' + JSON.stringify(data));
+    }
+
+    const mp3Id = data.data.id;
+    const mp3Response = await fetch(`https://api.convertio.co/convert/${mp3Id}/download`);
+    const mp3Data = await mp3Response.json();
+    if (!mp3Data.url) {
+      throw new Error('Failed to get MP3 download URL. Response: ' + JSON.stringify(mp3Data));
+    }
+
+    const mp3Url = mp3Data.url;
+    return mp3Url;
+  } catch (error) {
+    console.error('Error converting MIDI to MP3:', error);
+    throw new Error('Error converting MIDI to MP3: ' + error.message);
+  }
+}
+
