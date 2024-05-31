@@ -1,50 +1,37 @@
-# Welcome to your Expo app 👋
+# Integrantes
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+ALUNO: PAULO ABDIEL SARDINHA DE SOUSA SANTOS RGM: 27422763
+ALUNO: ANDRÉ SOARES MARQUES   RGM: 25923609
+ALUNO: ANDREI MAGALHÃES GEBRIM   RGM:  26403986
+ALUNO: ARTUR DANTAS MARTINS   RGM: 27796167
 
 ## Get started
 
-1. Install dependencies
+1. Instalar as depedências 
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. Iniciar o app
+   Primeiramente baixe o app do expo
 
    ```bash
     npx expo start
    ```
+   ou 
 
-In the output, you'll find options to open the app in a
+   ```bash
+    npm run start
+   ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+3. Escanear o QrCode ou Digitar o ip
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+4. No Input escreva as notas separado por espaços
+   Exemplo:
+   ```bash
+   C E G
+   ```
+5. Aperte no botão add, onde irá nomear os acorde
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+6. Depois dos acordes nomeados, aperte o botão criar midi, onde criará um midi, e mandará, para outra tela
