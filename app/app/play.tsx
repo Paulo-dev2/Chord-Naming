@@ -1,41 +1,61 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, Alert } from 'react-native';
+import { View, Text, Button, PermissionsAndroid, Platform } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import { Audio } from 'expo-av';
 import { styles } from "@/styles/Main";
 
-import {convertMidiToMp3} from "@/lib/create-midi";
+//import {playMidi} from "@/lib/extrator-midi";
 
 export default function PlayScreen() {
   const route = useRoute();
   const { uri } = route.params;
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
 
-  const url = convertMidiToMp3(uri);
-  console.log(url)
+  useEffect(() => {
+    const requestPermission = async () => {
+      const granted = await requestStoragePermission();
+      if (!granted) {
+        console.log('Storage permission denied.');
+        // Aqui você pode adicionar tratamento para quando a permissão é negada
+      }
+    };
 
-  const playSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-       { uri: url }
-    );
-    setSound(sound);
+    requestPermission();
+  }, []);
 
-    console.log('Playing sound');
-    await sound.playAsync(); 
-  }
-
-  const stopSound = async () => {
-    if (sound) {
-      await sound.stopAsync();
-      await sound.unloadAsync();
+  const requestStoragePermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          {
+            title: 'Storage Permission',
+            message: 'App needs access to your storage to read MIDI files',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          }
+        );
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.warn(err);
+        return false;
+      }
+    } else {
+      return true;
     }
+  };
+  
+  const Play = async () => {
+    const hasPermission = await requestStoragePermission();
+    if (!hasPermission) return;
+    if (!uri) return;
+    console.log(uri)
   }
 
   return (
     <View style={styles.Container}>
       <Text>URI Recebida: {uri}</Text>
-      <Button title="Parar" onPress={stopSound} />
-      <Button title="Play" onPress={playSound} />
+      {/* <Button title="Parar" onPress={stopSound} /> */}
+      <Button title="Play" onPress={Play} />
     </View>
   );
 }

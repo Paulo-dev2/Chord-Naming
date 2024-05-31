@@ -34,13 +34,11 @@ export default function HomeScreen() {
 
   const createMidi = async () => {
     const uri = await createAndSaveMidi(notes);
-    console.log(uri);
     if (uri && notes.length != 0) {
       router.push({ pathname: 'play', params: { uri } });
     }
   };
 
-  console.log(notes);
 
   return (
     <View style={styles.Container}>

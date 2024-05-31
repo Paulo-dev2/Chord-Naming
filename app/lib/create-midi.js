@@ -2,7 +2,6 @@ import * as FileSystem from 'expo-file-system';
 import { Midi } from '@tonejs/midi';
 import { Buffer } from 'buffer';
 import { StackAutomatonNominationChord } from '@/lib/automato';
-import { Audio } from 'expo-av';
 
 const BPM = 120;
 let currentTime = 0.5;
@@ -76,7 +75,7 @@ export const createAndSaveMidi = async (sequenceNotes) => {
 
   const midiArrayBuffer = midi.toArray();
   const midiBase64 = Buffer.from(midiArrayBuffer).toString('base64');
-  const fileName = 'output.midi';
+  const fileName = `output${Date.now()}.midi`;
 
   const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
   if (permissions.granted) {
