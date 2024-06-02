@@ -4,6 +4,10 @@ export const styles = StyleSheet.create({
     exemplo: {
       fontSize: 10,
     },
+    error: {
+      fontSize: 10,
+      color: 'red',
+    },
     inputContainer: {
       flexDirection: 'row',
       alignItems: 'center',

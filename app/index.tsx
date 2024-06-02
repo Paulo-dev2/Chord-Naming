@@ -11,6 +11,7 @@ export default function HomeScreen() {
   const [notes, setNotes] = useState<string[][]>([]);
   const [value, setValue] = useState<string>('');
   const [chords, setChords] = useState<string[] | any>([]);
+  const [error, setError] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -24,8 +25,9 @@ export default function HomeScreen() {
     const [result, acorde, tipo] = stackAutomatonNominationChord.nomination(chordArray);
 
     if (result === "Acorde Desconhecido") {
-      console.log("Acorde Desconhecido");
+      setError(true);
     } else {
+      setError(false);
       setNotes([...notes, chordArray]);
       setChords([...chords, acorde]);
       setValue('');
@@ -36,7 +38,7 @@ export default function HomeScreen() {
     const uri = await createAndSaveMidi(notes);
     if (uri && notes.length != 0) {
       console.log("index", chords)
-      router.push({ pathname: 'play', params: { uri, chords} });
+      //router.push({ pathname: 'play', params: { uri, chords} });
     }
   };
 
@@ -55,6 +57,9 @@ export default function HomeScreen() {
       <View style={styles.Division}>
         <Text>Digite as notas</Text>
         <Text style={styles.exemplo}>Separado por espaços</Text>
+        {error && (
+          <Text style={styles.error}>Acorde Desconhecido</Text>
+        )}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
