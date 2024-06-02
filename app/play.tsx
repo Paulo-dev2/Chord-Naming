@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
-import { playMidi } from "@/lib/extrator-midi";
+import { extractorMidi } from "@/lib/extrator-midi";
 
 export default function PlayScreen() {
   const route = useRoute();
@@ -17,7 +17,7 @@ export default function PlayScreen() {
 
   const loadNotes = async () => {
     try {
-      const loadedNotes: any = await playMidi(uri);
+      const loadedNotes: any = await extractorMidi(uri);
       const notesArray: any = Object.values(loadedNotes);
       console.log(notesArray)
       setNotes(notesArray);
